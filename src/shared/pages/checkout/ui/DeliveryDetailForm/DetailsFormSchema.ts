@@ -10,6 +10,7 @@ export const detailsFormSchema = z.object({
   city: z.string().optional(),
   state: z.string().optional(),
   zip: z.string().optional(),
+  delivery: z.string(),
 })
 
 export type TDetailsForm = z.infer<typeof detailsFormSchema>

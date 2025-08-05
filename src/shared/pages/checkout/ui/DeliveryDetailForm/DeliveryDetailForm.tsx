@@ -1,10 +1,10 @@
 'use client'
 
 import { FC, useEffect } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 
 import { useChekoutStore } from '@/shared/store'
-import { SelectionCard, SelectionGroup, TextField, Typography } from '@/shared/ui'
+import { RadioCardGroup, RadioCardItem, TextField, Typography } from '@/shared/ui'
 
 import { TDetailsForm } from './DetailsFormSchema'
 import cls from './styles.module.sass'
@@ -16,6 +16,7 @@ export const DeliveryDetailForm: FC = () => {
   const {
     register,
     trigger,
+    control,
     formState: { errors, isDirty, isValid },
   } = useFormContext<TDetailsForm>()
 
@@ -127,11 +128,22 @@ export const DeliveryDetailForm: FC = () => {
       <div className={cls.section_item}>
         <Typography level="title-lg">Delivery Method</Typography>
 
-        <SelectionGroup>
-          <SelectionCard data={{ title: 'Express', details: 'sdf', price: 12 }} id={'delivery'} />
-          <SelectionCard data={{ title: 'Express', details: 'sdf', price: 12 }} id={'delivery'} />
-          <SelectionCard data={{ title: 'Express', details: 'sdf', price: 12 }} id={'delivery'} />
-        </SelectionGroup>
+        <Controller
+          name="delivery"
+          control={control}
+          render={({ field }) => (
+            <RadioCardGroup {...field}>
+              <RadioCardItem
+                value="standard"
+                data={{ title: 'Standard', details: '4-10 business days', price: 0 }}
+              />
+              <RadioCardItem
+                value="express"
+                data={{ title: 'Express', details: '2-5 business days', price: 15 }}
+              />
+            </RadioCardGroup>
+          )}
+        />
       </div>
       <div className={cls.section_item}>
         <Typography level="title-lg">Payment Method</Typography>

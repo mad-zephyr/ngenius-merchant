@@ -10,8 +10,6 @@ import { OrderSummary, ProductCard } from './ui'
 export const CartPage: FC = () => {
   const { products, addProduct, removeProduct } = useChekoutStore()
 
-  const productsArray = Object.values(products)
-
   const handleChange = (sku: string, value: number) => {
     addProduct(products[sku], value)
   }
@@ -22,7 +20,7 @@ export const CartPage: FC = () => {
         <Typography level="h1">Shopping Cart</Typography>
       </div>
       <div className={classes.content}>
-        {productsArray.map((prod, i) => (
+        {Object.values(products).map((prod, i) => (
           <ProductCard
             key={prod.sku + i}
             data={prod}

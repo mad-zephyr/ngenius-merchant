@@ -19,6 +19,7 @@ const defaultValues = {
   city: '',
   state: '',
   zip: '',
+  delivery: 'express',
 }
 
 export const CheckoutPage: FC<PropsWithChildren> = () => {
