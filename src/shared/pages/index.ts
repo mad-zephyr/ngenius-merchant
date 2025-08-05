@@ -1,2 +1,2 @@
-export { CartPage } from './CartPage'
-export { CheckoutPage } from './CheckoutPage'
+export { CartPage } from './cart'
+export { CheckoutPage } from './checkout'
