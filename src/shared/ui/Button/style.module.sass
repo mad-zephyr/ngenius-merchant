@@ -1,0 +1,112 @@
+@mixin base()
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.1)
+    background: #4338ca
+    border: none
+    color: white
+    line-height: 0.8
+    display: flex
+    align-items: center
+    justify-content: center
+    column-gap: 0.375rem
+    font-family: var(--font-geist-sans)
+
+    font-weight: 500
+    font-size: 1.125rem
+    line-height: 1
+    color: #fff
+    border-radius: 0.25rem
+    cursor: pointer
+    user-select: none
+
+    &:hover
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.1)
+        background: #3730a3
+
+    &:focus,:active
+        box-shadow: 0 0 0 0.25rem rgba(68, 76, 231, 0.12)
+        background: #3730a3
+
+    &:disabled
+        background: #f5f5f5
+        color: #a3a3a3
+
+.lg
+    @include base
+    padding: 1rem 4.1875rem
+    font-size: 1.125rem
+
+.md
+    @include base
+    padding: 0.625rem 0.875rem
+    font-size: 0.875rem
+
+.sm
+    @include base
+    font-weight: 500
+    font-size: 1rem
+    line-height: 150%
+    color: #4338ca
+
+.xs
+    @include base
+    font-weight: 500
+    font-size: 0.873rem
+    line-height: 143%
+
+.primary
+    @include base
+    font-weight: 500
+
+    &:disabled
+        background: #f5f5f5
+        color: #a3a3a3
+
+        svg
+            fill: #a3a3a3
+
+.secondary
+    @include base
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.1)
+    background: #fff
+    font-weight: 500
+    font-size: 14px
+    line-height: 143%
+    color: #171717
+    max-height: 40px
+
+    &:hover
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.1)
+        background: #fafafa
+        color: #0a0a0a
+
+    &:focus,:active
+        box-shadow: 0 0 0 4px rgba(68, 76, 231, 0.12)
+        background: #fafafa
+
+    &:disabled
+        background: #f5f5f5
+        color: #a3a3a3
+        font-weight: 500
+        font-size: 16px
+        line-height: 143%
+
+        svg
+            fill: #a3a3a3
+
+.plain
+    @include base
+    background: none
+    color: #525252
+    box-shadow: none
+    font-size: 14px
+    line-height: 143%
+    padding: 0 2px
+
+    &:hover
+        color: #171717
+        background: #fff
+        box-shadow: none
+
+    &:focus, :active
+        box-shadow: 0 0 0 4px rgba(68, 76, 231, 0.12)
+        background: #fff

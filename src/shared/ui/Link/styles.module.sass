@@ -1,0 +1,43 @@
+@mixin base()
+    font-weight: 500
+    font-size: 1rem
+    line-height: 150%
+    color: #525252
+
+    border-radius: 4px
+
+    &:hover
+        color: #3730a3
+
+    &:focus, :active
+        box-shadow: 0 0 0 4px rgba(68, 76, 231, 0.12)
+        background: #fff
+
+    &:disabled
+        color: #a3a3a3
+        fill: #a3a3a3
+
+.link
+    @include base
+    display: flex
+    align-items: center
+    justify-content: center
+    column-gap: 6px
+    width: fit-content
+
+.color
+    color: #4338ca
+
+    svg
+        fill: #4338ca
+
+.md
+    font-weight: 500
+    font-size: 1rem
+    line-height: 150%
+    color: #4338ca
+
+.sm
+    font-weight: 500
+    font-size: 0.873rem
+    line-height: 143%

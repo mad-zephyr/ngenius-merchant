@@ -1,0 +1,65 @@
+@mixin base
+    color: #030712
+    font-family: var(--font-geist-sans), 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+
+.h1
+    h1
+        @include base
+        font-size: 3rem
+        font-weight: 500
+        line-height: 1
+
+.h2
+    h2
+        @include base
+        font-size: 2.25rem
+        line-height: 111%
+
+.h3
+    h3
+        @include base
+        font-weight: 500
+        font-size: 1.875rem
+        line-height: 120%
+
+.h4
+    h4
+        @include base
+        font-weight: 400
+        font-size: 1.5rem
+        line-height: 133%
+
+.title-lg
+    @include base
+    font-size: 1.125rem
+    line-height: 156%
+    font-weight: 400
+
+.title-md
+    @include base
+    font-weight: 400
+    font-size: 1rem
+    line-height: 1.5rem
+
+.title-sm
+    @include base
+    font-weight: 400
+    font-size: 0.875rem
+    line-height: 143%
+
+.body-lg
+    @include base
+
+.body-md
+    @include base
+    font-weight: 400
+    font-size: 14px
+    line-height: 143%
+    color: #525252
+    width: auto
+
+.body-sm
+    @include base
+
+.body-xs
+    @include base

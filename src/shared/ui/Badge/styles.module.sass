@@ -1,0 +1,22 @@
+@mixin base()
+    display: flex
+    align-items: center
+    column-gap: 0.25rem
+    height: 28px
+
+.main
+    @include base
+    border: 1px solid #c7d2fe
+    border-radius: 9999px
+    padding: 4px 10px
+    width: min-content
+
+.primary
+    background: #eef2ff
+    color: #4338ca
+
+.secondary
+    border: 0.50px solid #e5e5e5
+    border-radius: 4px
+    padding: 4px 10px
+    background: #e5e7eb
