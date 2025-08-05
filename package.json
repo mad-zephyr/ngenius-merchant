@@ -10,27 +10,28 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
-    "@mui/joy": "^5.0.0-beta.52",
     "@nanostores/react": "^1.0.0",
+    "@stripe/react-stripe-js": "^3.9.0",
+    "@stripe/stripe-js": "^7.8.0",
     "axios": "^1.11.0",
     "nanostores": "^1.0.1",
     "next": "15.4.5",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
     "zod": "^4.0.14"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@svgr/webpack": "^8.1.0",
-    "@types/node": "^20",
+    "@types/node": "^24.2.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^8.36.0",
-    "@typescript-eslint/parser": "^8.36.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
     "clsx": "^2.1.1",
     "eslint": "^9.30.1",
-    "eslint-config-next": "15.4.2",
+    "eslint-config-next": "^15.4.5",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-boundaries": "^5.0.1",
@@ -43,6 +44,6 @@
     "sass": "^1.89.2",
     "ts-node": "^10.9.2",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^5"
+    "typescript": "^5.9.2"
   }
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import { FC } from 'react'
 
 import { useChekoutStore } from '@/shared/store/useChekoutStore'

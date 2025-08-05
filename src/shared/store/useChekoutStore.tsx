@@ -1,3 +1,5 @@
+'use client'
+
 import { useStore } from '@nanostores/react'
 import { atom, computed, map } from 'nanostores'
 import { useEffect, useId } from 'react'
@@ -41,9 +43,10 @@ export const $totalDiscount = computed([$products, $coupons], (products, coupons
   return couponDisc + productDisc
 })
 
-export const $totalPrice = computed($products, (products) =>
-  Object.values(products).reduce((acc, { price, quantity }) => acc + price.actual * quantity, 0)
-)
+export const $totalPrice = computed($products, (products) => {
+  const productsArray = Object.values(products)
+  return productsArray.reduce((acc, { price, quantity }) => acc + price.actual * quantity, 0)
+})
 
 export const $price = computed([$totalPrice, $totalDiscount], (price, discount) => price - discount)
 
@@ -73,10 +76,6 @@ const $triggerFormValidation = atom(false)
 
 const $checkOutFormId = atom<string>('formId')
 
-const setCheckoutFormId = (id: string) => {
-  $checkOutFormId.set(id)
-}
-
 const setShouldTriggerFormValidation = (trigger: boolean) => {
   $triggerFormValidation.set(trigger)
 }
@@ -103,6 +102,7 @@ export const removeCoupon = (couponId: TDiscountCoupon['id']) => {
 }
 
 export const useChekoutStore = () => {
+  const generatedChekoutFormId = useId()
   const products = useStore($products)
   const price = useStore($totalPrice)
   const discount = useStore($totalDiscount)
@@ -113,7 +113,10 @@ export const useChekoutStore = () => {
   const formSubmitCount = useStore($formSubmitCount)
   const isFormSubmitting = useStore($isFormSubmitting)
   const checkOutFormId = useStore($checkOutFormId)
-  const generatedChekoutFormId = useId()
+
+  const setCheckoutFormId = (id: string) => {
+    $checkOutFormId.set(id)
+  }
 
   useEffect(() => {
     if (!checkOutFormId) {

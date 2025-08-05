@@ -22,6 +22,8 @@ type OrderPaymentRequest = CreateOrderRequest & {
 export const OrderSummary: FC = () => {
   const { products, total, isFormValid, checkOutFormId } = useChekoutStore()
 
+  const productsArray = Object.values(products)
+
   const { handleSubmit } = useFormContext<TDetailsForm>()
 
   const { ni } = useNgeniusStore()
@@ -51,7 +53,7 @@ export const OrderSummary: FC = () => {
     <section className={classes.section}>
       <Typography level="h4">Order Summary</Typography>
       <div className={classes.wrapper}>
-        {Object.values(products).map((item, i) => (
+        {productsArray.map((item, i) => (
           <OrderProduct key={item.sku + i} {...item} />
         ))}
       </div>

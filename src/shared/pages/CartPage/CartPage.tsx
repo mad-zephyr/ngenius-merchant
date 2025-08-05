@@ -2,8 +2,7 @@
 
 import { FC } from 'react'
 
-import { useChekoutStore } from '@/shared/store/useChekoutStore'
-import { Typography } from '@/shared/ui'
+import { Typography, useChekoutStore } from '@/shared'
 
 import classes from './classes.module.sass'
 import { OrderSummary, ProductCard } from './ui'
@@ -11,12 +10,10 @@ import { OrderSummary, ProductCard } from './ui'
 export const CartPage: FC = () => {
   const { products, addProduct, removeProduct } = useChekoutStore()
 
+  const productsArray = Object.values(products)
+
   const handleChange = (sku: string, value: number) => {
     addProduct(products[sku], value)
-  }
-
-  const handleRemove = (sku: string) => {
-    removeProduct(sku)
   }
 
   return (
@@ -25,12 +22,12 @@ export const CartPage: FC = () => {
         <Typography level="h1">Shopping Cart</Typography>
       </div>
       <div className={classes.content}>
-        {Object.values(products).map((prod, i) => (
+        {productsArray.map((prod, i) => (
           <ProductCard
             key={prod.sku + i}
             data={prod}
             onChange={handleChange}
-            onRemove={handleRemove}
+            onRemove={removeProduct}
           />
         ))}
       </div>
