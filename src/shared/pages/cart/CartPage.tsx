@@ -4,7 +4,7 @@ import { FC } from 'react'
 
 import { Typography, useChekoutStore } from '@/shared'
 
-import classes from './classes.module.sass'
+import cls from './styles.module.sass'
 import { OrderSummary, ProductCard } from './ui'
 
 export const CartPage: FC = () => {
@@ -15,11 +15,11 @@ export const CartPage: FC = () => {
   }
 
   return (
-    <div className={classes.main}>
-      <div className={classes.header}>
+    <div className={cls.main}>
+      <div className={cls.header}>
         <Typography level="h1">Shopping Cart</Typography>
       </div>
-      <div className={classes.content}>
+      <div className={cls.content}>
         {Object.values(products).map((prod, i) => (
           <ProductCard
             key={prod.sku + i}
@@ -29,7 +29,7 @@ export const CartPage: FC = () => {
           />
         ))}
       </div>
-      <div className={classes.summary}>
+      <div className={cls.summary}>
         <OrderSummary currency="EUR" />
       </div>
     </div>
