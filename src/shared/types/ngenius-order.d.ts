@@ -141,6 +141,123 @@ type TError = {
   domain: string
 }
 
+/** Ответ N-Genius “Hosted-Session Payment” */
+export interface NgeniusPaymentResponse {
+  /** URN вида: urn:payment:uuid */
+  _id: string
+
+  /** HATEOAS-ссылки */
+  _links: {
+    self: { href: string }
+    /** Массив curies, которые N-Genius добавляет для compact-links */
+    curies: Array<{
+      name: string
+      href: string
+      templated?: boolean
+    }>
+    /** Возможны и другие ссылки — ловим их индекс-сигнатурой */
+    [rel: string]:
+      | { href: string; templated?: boolean }
+      | Array<{ href: string; templated?: boolean }>
+  }
+
+  /** Дублирует _id без префикса `urn:payment:` */
+  reference: string
+
+  /** Детали платёжного средства */
+  paymentMethod: {
+    /** ММММ-ГГ (ISO 2000-архивный формат, не ISO 8601) */
+    expiry: string
+    cardholderName: string
+    /** Scheme: VISA, MASTERCARD, … */
+    name: string
+    cardType: 'CREDIT' | 'DEBIT' | string
+    cardCategory?: string // PLATINUM, GOLD …
+    issuingOrg?: string
+    issuingCountry?: string // ISO-2
+    issuingOrgWebsite?: string
+    issuingOrgPhoneNumber?: string
+    /** Маскированный PAN (если возвращается) */
+    pan?: string
+    /** Маскированный CVV (обычно `"***"` или отсутствует) */
+    cvv?: string
+    /** Запасной catch-all */
+    [k: string]: unknown
+  }
+
+  /** Содержится, если пользователь сохранил карту */
+  savedCard?: {
+    maskedPan: string
+    expiry: string
+    cardholderName: string
+    scheme: string
+    cardToken: string
+    recaptureCsc: boolean
+    [k: string]: unknown
+  }
+
+  /** Текущее состояние платежа */
+  state: 'CAPTURED' | 'AUTHORISED' | 'FAILED' | 'VOIDED' | string
+
+  /** Сумма в минорных единицах валюты (например, 8298 = 82.98 AED) */
+  amount: {
+    currencyCode: string // ISO 4217
+    value: number
+  }
+
+  /** ISO 8601 с наносекундами */
+  updateDateTime: string
+
+  outletId: string
+  orderReference: string
+
+  /** Появляется после CAPTURE/AUTHORISE */
+  authenticationCode?: string
+
+  originIp?: string
+
+  /** Авторизационный ответ банка-эквайера */
+  authResponse?: {
+    authorizationCode: string
+    success: boolean
+    resultCode: string
+    resultMessage: string
+    rrn?: string
+    mid?: string
+    systemAuditTraceNumber?: string
+    [k: string]: unknown
+  }
+
+  /** 3-D Secure сведения (ключ начинается с цифры, поэтому в кавычках) */
+  '3ds'?: {
+    eci: string
+    eciDescription?: string
+    summaryText?: string
+    [k: string]: unknown
+  }
+
+  /** Дублирует MID из authResponse */
+  mid?: string
+
+  /** Вложенные сущности, напр. результат CAPTURE */
+  _embedded?: {
+    /** Массив захватов (может быть несколько частичных Capture) */
+    'cnp:capture': Array<{
+      _id?: string
+      state?: string
+      amount?: { currencyCode: string; value: number }
+      updateDateTime?: string
+      reference?: string
+      [k: string]: unknown
+    }>
+    /** Любые другие вложенные коллекции */
+    [rel: string]: unknown
+  }
+
+  /** Любое будущее поле, которое N-Genius может добавить */
+  [k: string]: unknown
+}
+
 export type PaymentErrorResponse = {
   message: string
   code: number

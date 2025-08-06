@@ -2,6 +2,7 @@
 
 import { FC, useState } from 'react'
 
+import { fr } from '@/shared/lib'
 import { useChekoutStore } from '@/shared/store'
 import { Badge, Button, TextField, Typography } from '@/shared/ui'
 
@@ -34,7 +35,7 @@ export const DiscountButton: FC = () => {
             </Badge>
           ))}
         </div>
-        {!!discount && <Typography level="title-lg">-${discount.toFixed(2)}</Typography>}
+        {!!discount && <Typography level="title-lg">-${fr.format(discount)}</Typography>}
       </div>
       <div className={cls.row_reverse}>
         {!addCouponActive ? (

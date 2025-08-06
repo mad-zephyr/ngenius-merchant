@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { FC } from 'react'
 
+import { fr } from '@/shared/lib'
 import { TProductCard } from '@/shared/types/app'
 import { Typography } from '@/shared/ui'
 
@@ -14,12 +15,12 @@ export const OrderProduct: FC<TProductCard> = (props) => {
         <Image src={cover} alt={name} fill />
       </div>
       <div className={cls.details}>
-        <Typography level="title-sm">{name}</Typography>
-        <Typography level="title-sm">{details.join(' • ')}</Typography>
+        <Typography level="title-lg">{name}</Typography>
+        {details && <Typography level="title-sm">{details.join(' • ')}</Typography>}
         <Typography level="title-sm">Quantity: {quantity}</Typography>
       </div>
       <Typography level="title-sm">
-        {price.currency} {price.actual}
+        {price.currency} {fr.format(price.actual)}
       </Typography>
     </div>
   )

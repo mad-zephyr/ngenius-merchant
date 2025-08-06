@@ -1,13 +1,14 @@
 'use client'
 
-import cls from 'clsx'
+import clsx from 'clsx'
 import { ButtonHTMLAttributes, FC, MouseEvent, PropsWithChildren } from 'react'
 
 import { Icon, TIconNames } from '../Icon'
-import classes from './style.module.sass'
+import cls from './style.module.sass'
 
 type TButton = ButtonHTMLAttributes<HTMLButtonElement> & {
   size: 'lg' | 'md' | 'sm' | 'xs'
+  accent?: true
 
   variant: 'primary' | 'secondary' | 'plain'
   postFix?: TIconNames
@@ -22,9 +23,10 @@ export const Button: FC<PropsWithChildren<TButton>> = ({
   className,
   children,
   preFix,
+  accent,
   ...props
 }) => {
-  const classname = cls(className, classes[size], classes[variant])
+  const classname = clsx(className, cls[size], cls[variant], { [cls.accent]: accent })
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     onClick?.(e)

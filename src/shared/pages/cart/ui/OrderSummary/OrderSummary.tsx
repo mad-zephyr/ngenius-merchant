@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { FC } from 'react'
 
+import { fr } from '@/shared/lib'
 import { useChekoutStore } from '@/shared/store/useChekoutStore'
 import { Button, Typography } from '@/shared/ui'
 
@@ -15,7 +16,7 @@ type TOrderSummary = {
 
 type Keys = Pick<TOrderSummary, 'currency'>['currency']
 
-export const OrderSummary: FC<TOrderSummary> = ({ currency }) => {
+export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
   const router = useRouter()
 
   const { total, price } = useChekoutStore()
@@ -37,7 +38,7 @@ export const OrderSummary: FC<TOrderSummary> = ({ currency }) => {
           <Typography level="body-sm">Subtotal</Typography>
           <Typography level="body-lg" className={classes.priceDetails}>
             {currnsySignMap[currency]}
-            {price.toFixed(2)}
+            {fr.format(price)}
           </Typography>
         </div>
         <div className={classes.row}>
@@ -56,7 +57,7 @@ export const OrderSummary: FC<TOrderSummary> = ({ currency }) => {
         </Typography>
         <Typography level="title-lg" className={classes.price}>
           {currnsySignMap[currency]}
-          {total.toFixed(2)}
+          {fr.format(total)}
         </Typography>
       </div>
 

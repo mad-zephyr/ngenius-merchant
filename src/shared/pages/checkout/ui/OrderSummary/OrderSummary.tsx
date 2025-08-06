@@ -1,18 +1,21 @@
 'use client'
 
-import { FC } from 'react'
+import { useRouter } from 'next/navigation'
+import { FC, useEffect } from 'react'
 import { SubmitHandler, useFormContext } from 'react-hook-form'
 
 import { api } from '@/shared/api'
+import { fr } from '@/shared/lib'
 import { useNgeniusStore } from '@/shared/store'
 import { useChekoutStore } from '@/shared/store/useChekoutStore'
 import { CreateOrderRequest } from '@/shared/types'
+import { NgeniusPaymentResponse } from '@/shared/types/ngenius-order'
 import { Button, Typography } from '@/shared/ui'
 
 import { TDetailsForm } from '../DeliveryDetailForm'
 import { OrderProduct } from './OrderProduct'
 import { OrderSummaryDetails } from './OrderSummaryDetails'
-import classes from './styles.module.sass'
+import cls from './styles.module.sass'
 
 type OrderPaymentRequest = CreateOrderRequest & {
   sessionId: string
@@ -20,19 +23,30 @@ type OrderPaymentRequest = CreateOrderRequest & {
 }
 
 export const OrderSummary: FC = () => {
-  const { products, total, isFormValid, checkOutFormId } = useChekoutStore()
-
+  const router = useRouter()
+  const { products, total, isFormValid, checkOutFormId, setCheckoutData, setDeliveryType } =
+    useChekoutStore()
+  const { ni } = useNgeniusStore()
+  const { handleSubmit, watch } = useFormContext<TDetailsForm>()
   const productsArray = Object.values(products)
 
-  const { handleSubmit } = useFormContext<TDetailsForm>()
+  const delivery = watch('delivery')
 
-  const { ni } = useNgeniusStore()
+  useEffect(() => {
+    setDeliveryType(delivery as 'standard' | 'express')
+  }, [delivery, setDeliveryType])
 
   const handlePay: SubmitHandler<TDetailsForm> = async (data) => {
     if (ni && isFormValid) {
       const sessionId = await ni?.generateSessionId()
 
-      await api.post<unknown, unknown, OrderPaymentRequest>('/api/order/payment', {
+      setCheckoutData(data)
+
+      const paymentResponse = await api.post<
+        unknown,
+        { data: NgeniusPaymentResponse },
+        OrderPaymentRequest
+      >('/api/order/payment', {
         sessionId: sessionId.session_id,
         outletRef: process.env.NEXT_PUBLIC_OUTLET_REF || 'a785ec9f-6605-418f-9654-3215ba5f4882',
         action: 'PURCHASE',
@@ -46,21 +60,36 @@ export const OrderSummary: FC = () => {
         },
         emailAddress: data.email,
       })
+
+      const { status } = await ni.handlePaymentResponse(paymentResponse.data)
+
+      if (status === ni.paymentStates.AUTHORISED || status === ni.paymentStates.CAPTURED) {
+        // Same as before this signals successful payment
+        router.replace('/cart/successfull')
+      } else if (
+        status === ni.paymentStates.FAILED ||
+        // A new state to look out for is 3DS Challenge failure
+        status === ni.paymentStates.THREE_DS_FAILURE
+      ) {
+        // payment failure signal
+      } else {
+        // FAILED authentications scenarios
+      }
     }
   }
 
   return (
-    <section className={classes.section}>
+    <section className={cls.section}>
       <Typography level="h4">Order Summary</Typography>
-      <div className={classes.wrapper}>
+      <div className={cls.wrapper}>
         {productsArray.map((item, i) => (
           <OrderProduct key={item.sku + i} {...item} />
         ))}
       </div>
       <OrderSummaryDetails />
-      <div className={classes.price}>
+      <div className={cls.price}>
         <span>Total</span>
-        <span>${total.toFixed(2)}</span>
+        <span>${fr.format(total)}</span>
       </div>
 
       <Button

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { FC } from 'react'
 
+import { fr } from '@/shared/lib'
 import { TProductCard } from '@/shared/types/app'
 import { Button, Typography } from '@/shared/ui'
 
@@ -43,7 +44,7 @@ export const ProductCard: FC<TProdCard> = ({ data, onChange, onRemove }) => {
             </Button>
           </div>
           <div className={classes.footerRight}>
-            {price.currency} {Number(price.actual * quantity).toFixed(2)}
+            {price.currency} {fr.format(Number(price.actual * quantity))}
           </div>
         </div>
       </div>

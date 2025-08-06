@@ -30,7 +30,7 @@ export const CartPage: FC = () => {
         ))}
       </div>
       <div className={cls.summary}>
-        <OrderSummary currency="EUR" />
+        <OrderSummary currency="USD" />
       </div>
     </div>
   )

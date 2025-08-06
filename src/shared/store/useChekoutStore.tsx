@@ -43,12 +43,25 @@ export const $totalDiscount = computed([$products, $coupons], (products, coupons
   return couponDisc + productDisc
 })
 
+const $deliveryType = atom<'standard' | 'express'>('standard')
+
+const setDeliveryType = (type: 'standard' | 'express') => {
+  $deliveryType.set(type)
+}
+
 export const $totalPrice = computed($products, (products) => {
   const productsArray = Object.values(products)
   return productsArray.reduce((acc, { price, quantity }) => acc + price.actual * quantity, 0)
 })
 
-export const $price = computed([$totalPrice, $totalDiscount], (price, discount) => price - discount)
+export const $price = computed(
+  [$totalPrice, $totalDiscount, $deliveryType],
+  (price, discount, deliveryType) => {
+    const subtotal = price - discount
+
+    return deliveryType === 'standard' ? subtotal : subtotal + 15
+  }
+)
 
 export const $checkoutForm = map<TCheckoutForm>({
   formValid: false,
@@ -101,6 +114,36 @@ export const removeCoupon = (couponId: TDiscountCoupon['id']) => {
   $coupons.set(coupons.filter((coupon) => coupon.id !== couponId))
 }
 
+type TCheckoutData = {
+  email: string
+  firstName: string
+  delivery: string
+  country?: string | undefined
+  lastName?: string | undefined
+  adress?: string | undefined
+  aditionalAdress?: string | undefined
+  city?: string | undefined
+  state?: string | undefined
+  zip?: string | undefined
+}
+
+export const $checkoutData = atom<TCheckoutData>({
+  email: '',
+  country: '',
+  firstName: '',
+  lastName: '',
+  adress: '',
+  aditionalAdress: '',
+  city: '',
+  state: '',
+  zip: '',
+  delivery: 'express',
+})
+
+export const setCheckoutData = (data: TCheckoutData) => {
+  $checkoutData.set(data)
+}
+
 export const useChekoutStore = () => {
   const generatedChekoutFormId = useId()
   const products = useStore($products)
@@ -113,6 +156,8 @@ export const useChekoutStore = () => {
   const formSubmitCount = useStore($formSubmitCount)
   const isFormSubmitting = useStore($isFormSubmitting)
   const checkOutFormId = useStore($checkOutFormId)
+  const checkoutData = useStore($checkoutData)
+  const deliveryType = useStore($deliveryType)
 
   const setCheckoutFormId = (id: string) => {
     $checkOutFormId.set(id)
@@ -126,6 +171,8 @@ export const useChekoutStore = () => {
 
   return {
     setCheckoutFormId,
+    setDeliveryType,
+    deliveryType,
     checkOutFormId,
     products,
     total,
@@ -136,6 +183,8 @@ export const useChekoutStore = () => {
     shouldTriggerFormValidation,
     formSubmitCount,
     isFormSubmitting,
+    checkoutData,
+    setCheckoutData,
     setFormSubmitCount,
     setIsFormSubmitting,
     setShouldTriggerFormValidation,
