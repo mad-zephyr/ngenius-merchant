@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getAccessToken, paymentApi } from '@/shared'
+import { getAccessToken, paymentApi, toMinorUnits } from '@/shared'
 import {
   CreateOrderRequest,
   HostedSessionPaymentRequest,
@@ -16,11 +16,13 @@ export async function POST(req: NextRequest) {
 
   const token = await getAccessToken()
 
+  console.log('VALUE: ', toMinorUnits(rest.amount.value))
+
   const data = {
     action: 'SALE',
     amount: {
       currencyCode: rest.amount.currencyCode,
-      value: rest.amount.value * 100,
+      value: toMinorUnits(rest.amount.value),
     },
     shippingAddress: { ...rest.shippingAddress },
     session: { id: sessionId },
@@ -41,6 +43,9 @@ export async function POST(req: NextRequest) {
       Accept: 'application/vnd.ni-payment.v2+json',
     },
   }
+
+  console.log('DATA: ', data)
+
   try {
     const response = await paymentApi.post<
       unknown,

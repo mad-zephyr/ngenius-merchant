@@ -1,2 +1,2 @@
 export {} from './getBasePath'
-export { fr } from './numFormater'
+export { fr, toMinorUnits } from './numFormater'

@@ -78,3 +78,26 @@
             line-height: 133%
             text-align: right
             color: #171717
+
+@media screen and (max-width:78.75rem)
+    .left
+        grid-column: 1 / span 2
+        grid-row: 2 / span 1
+
+    .right
+        grid-column: 1 / span 2
+        grid-row: 3 / span 1
+
+    .image
+        height: 420px
+
+@media screen and (max-width: 46.25rem)
+    .main
+        padding-bottom: 2rem
+
+    .image
+        height: 196px
+
+    .details
+        flex-direction: column
+        row-gap: 2rem
