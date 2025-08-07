@@ -4,14 +4,14 @@ import { FC } from 'react'
 
 import { fr } from '@/shared/lib'
 import { useChekoutStore } from '@/shared/store/useChekoutStore'
-import { Typography } from '@/shared/ui'
+import { Badge, Typography } from '@/shared/ui'
 
 import cls from './styles.module.sass'
 
 export const OrderSummaryDetails: FC = () => {
-  const { subTotal, discount, deliveryType } = useChekoutStore()
+  const { subTotal, discount, coupons, deliveryType } = useChekoutStore()
 
-  console.log('SUBTOTAL: ', subTotal)
+  console.log('COUPONS: ', coupons)
 
   return (
     <div className={cls.main}>
@@ -25,7 +25,12 @@ export const OrderSummaryDetails: FC = () => {
       </div>
       {!!discount && (
         <div className={cls.row}>
-          <Typography level="body-xs">Coupon discount</Typography>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Typography level="body-xs">Coupon discount</Typography>
+            {Object.values(coupons).map((coupon) => (
+              <Badge key={coupon.id}>{coupon.name}</Badge>
+            ))}
+          </div>
           <Typography level="body-xs">-${fr.format(discount)}</Typography>
         </div>
       )}

@@ -22,6 +22,7 @@ export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
   const handleNavigate = () => {
     router.push('/cart/checkout')
   }
+
   return (
     <div className={classes.main}>
       <Typography level="h4">Order Summary</Typography>

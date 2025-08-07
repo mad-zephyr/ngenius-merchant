@@ -8,6 +8,19 @@ import { calculateDiscountPrice } from '../lib'
 import { mockProducts } from '../mocks'
 import { NgeniusPaymentResponse, TProductCard } from '../types'
 
+type TCheckoutData = {
+  email: string
+  firstName: string
+  delivery: string
+  country?: string | undefined
+  lastName?: string | undefined
+  adress?: string | undefined
+  aditionalAdress?: string | undefined
+  city?: string | undefined
+  state?: string | undefined
+  zip?: string | undefined
+}
+
 type TDiscountCoupon = {
   name: string
   id: string
@@ -31,7 +44,7 @@ const initialProducts = mockProducts.reduce<Record<string, TProductCard>>((acc, 
 
 export const $products = map<Record<string, TProductCard>>(initialProducts)
 
-export const $coupons = map<TDiscountCoupon[]>([])
+export const $coupons = map<Record<string, TDiscountCoupon>>({})
 
 export const $subTotal = computed($products, (products) => {
   return Object.values(products).reduce((acc, { price, quantity }) => {
@@ -44,7 +57,7 @@ export const $subTotal = computed($products, (products) => {
 })
 
 export const $totalDiscount = computed([$coupons], (coupons) => {
-  return coupons.reduce((acc, { discount }) => acc + discount, 0)
+  return Object.values(coupons).reduce((acc, { discount }) => acc + discount, 0)
 })
 
 type TDeliveryType = 'standard' | 'express'
@@ -112,25 +125,11 @@ export const removeProduct = (sku: string) => {
 }
 
 export const applyCoupon = (coupon: TDiscountCoupon) => {
-  $coupons.set([...$coupons.get(), coupon])
+  $coupons.setKey(coupon.id, coupon)
 }
 
 export const removeCoupon = (couponId: TDiscountCoupon['id']) => {
-  const coupons = $coupons.get()
-  $coupons.set(coupons.filter((coupon) => coupon.id !== couponId))
-}
-
-type TCheckoutData = {
-  email: string
-  firstName: string
-  delivery: string
-  country?: string | undefined
-  lastName?: string | undefined
-  adress?: string | undefined
-  aditionalAdress?: string | undefined
-  city?: string | undefined
-  state?: string | undefined
-  zip?: string | undefined
+  $coupons.setKey(couponId, undefined)
 }
 
 export const $checkoutData = atom<TCheckoutData>({

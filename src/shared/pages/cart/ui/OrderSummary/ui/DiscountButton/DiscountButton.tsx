@@ -10,6 +10,7 @@ import cls from './styles.module.sass'
 
 export const DiscountButton: FC = () => {
   const { applyCoupon, coupons, discount, removeCoupon } = useChekoutStore()
+
   const [addCouponActive, setAddCouponActive] = useState(!!coupons.length)
   const [couponName, setCouponName] = useState<string>('')
 
@@ -29,7 +30,7 @@ export const DiscountButton: FC = () => {
     <>
       <div className={cls.row}>
         <div className={cls.group}>
-          {coupons.map((coupon) => (
+          {Object.values(coupons).map((coupon) => (
             <Badge key={coupon.id} variant="primary">
               {coupon.name}
             </Badge>
@@ -65,7 +66,7 @@ export const DiscountButton: FC = () => {
               </Button>
             </div>
             <div className={cls.badges}>
-              {coupons.map((coupon) => (
+              {Object.values(coupons).map((coupon) => (
                 <Badge
                   key={coupon.id}
                   variant="secondary"
