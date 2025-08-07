@@ -5,3 +5,4 @@ export { createOneStagePayment, getAccessToken, paymentApi } from './paymentGate
 export * from './store'
 export * from './types'
 export * from './ui'
+export * from './widgets'

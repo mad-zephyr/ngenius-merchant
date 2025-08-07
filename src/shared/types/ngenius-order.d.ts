@@ -281,8 +281,8 @@ export interface NgeniusPaymentResponse {
     /** ММММ-ГГ (ISO 2000-архивный формат, не ISO 8601) */
     expiry: string
     cardholderName: string
-    /** Scheme: VISA, MASTERCARD, … */
-    name: string
+    scheme: 'MASTERCARD' | 'VISA' | 'CARD'
+    name: 'MASTERCARD' | 'VISA' | 'CARD'
     cardType: 'CREDIT' | 'DEBIT' | string
     cardCategory?: string // PLATINUM, GOLD …
     issuingOrg?: string
@@ -375,3 +375,132 @@ export type PaymentErrorResponse = {
   code: number
   errors: TError[]
 }
+
+// types/ngenius.ts
+/** Универсальная ссылка HATEOAS */
+export interface Link {
+  href: string
+  templated?: boolean
+}
+
+/** CURIE-ссылка (compact URI) */
+export interface CuriesLink {
+  name: string
+  href: string
+  templated: boolean
+}
+
+/** Блок платёжного средства */
+export interface PaymentMethod {
+  expiry: string // YYYY-MM
+  cardholderName: string
+  name: string // VISA / MASTERCARD …
+  cardType: string // CREDIT / DEBIT
+  cardCategory?: string // PLATINUM / STANDARD …
+  issuingOrg?: string
+  issuingCountry?: string // ISO-2
+  issuingOrgWebsite?: string
+  issuingOrgPhoneNumber?: string
+  pan?: string // маскированный PAN
+  cvv?: string // "***"
+  [k: string]: unknown
+}
+
+/** Блок сохранённой карты */
+export interface SavedCard {
+  maskedPan: string
+  expiry: string // YYYY-MM
+  cardholderName: string
+  scheme: string // VISA / MASTERCARD …
+  cardToken: string
+  recaptureCsc?: boolean
+  [k: string]: unknown
+}
+
+/** Ответ банка-эквайера */
+export interface AuthResponse {
+  authorizationCode: string
+  success: boolean
+  resultCode: string
+  resultMessage: string
+  rrn?: string // Retrieval Reference Number
+  mid?: string // Merchant ID
+  systemAuditTraceNumber?: string
+  [k: string]: unknown
+}
+
+/** 3-D Secure объект */
+export interface ThreeDSData {
+  eci: string
+  eciDescription?: string
+  summaryText?: string
+  [k: string]: unknown
+}
+
+/** Объект частичного/полного capture (вложенный) */
+export interface Capture {
+  _id?: string
+  state?: string
+  reference?: string
+  amount?: { currencyCode: string; value: number }
+  updateDateTime?: string
+  authResponse?: AuthResponse
+  [k: string]: unknown
+}
+
+// /** Главный ответ Hosted-Session Payment */
+// export interface NgeniusPaymentResponse {
+//   /** URN “urn:payment:{uuid}” */
+//   _id: string
+
+//   /** HATEOAS-ссылки */
+//   _links: {
+//     self: Link
+//     curies: CuriesLink[]
+//     [rel: string]: Link | Link[] | CuriesLink[]
+//   }
+
+//   /** Дублирует часть _id без префикса */
+//   reference: string
+
+//   /** Детали карты */
+//   paymentMethod: PaymentMethod
+
+//   /** Если покупатель использовал сохранённую карту */
+//   savedCard?: SavedCard
+
+//   /** Состояние платежа */
+//   state: 'CAPTURED' | 'PARTIALLY_CAPTURED' | 'AUTHORISED' | 'FAILED' | 'VOIDED' | string
+
+//   /** Сумма в минорных единицах */
+//   amount: {
+//     currencyCode: string // ISO-4217
+//     value: number
+//   }
+
+//   /** ISO-8601 + наносекунды */
+//   updateDateTime: string
+
+//   outletId: string
+//   orderReference: string
+
+//   authenticationCode?: string
+//   originIp?: string
+
+//   authResponse?: AuthResponse
+
+//   /** 3-D Secure блок (ключ — строка, начинающаяся с цифры) */
+//   '3ds'?: ThreeDSData
+
+//   /** MID может дублироваться из authResponse */
+//   mid?: string
+
+//   /** Вложенные сущности (capture и др.) */
+//   _embedded?: {
+//     'cnp:capture': Capture[]
+//     [rel: string]: unknown
+//   }
+
+//   /** Для будущих возможных полей */
+//   [k: string]: unknown
+// }

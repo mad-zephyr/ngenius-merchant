@@ -8,6 +8,7 @@ export {
   type Language,
   type MerchantAttributes,
   type MerchantDefinedData,
+  type NgeniusPaymentResponse,
   type OrderAction,
   type PayFacData,
   type PaymentErrorResponse,

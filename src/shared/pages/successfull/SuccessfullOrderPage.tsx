@@ -7,17 +7,14 @@ import { FC } from 'react'
 import { fr } from '@/shared/lib'
 import { useChekoutStore } from '@/shared/store'
 import { Button, placeholderShimmer, Typography } from '@/shared/ui'
+import { OrderProduct, OrderSummaryDetails } from '@/shared/widgets'
 
-// eslint-disable-next-line no-restricted-imports, import/no-internal-modules
-import { OrderProduct } from '../checkout/ui/OrderSummary/OrderProduct'
-// eslint-disable-next-line no-restricted-imports, import/no-internal-modules
-import { OrderSummaryDetails } from '../checkout/ui/OrderSummary/OrderSummaryDetails'
 import cls from './styles.module.sass'
 import { CreditCard } from './ui'
 
 export const SuccessfullOrderPage: FC = () => {
   const route = useRouter()
-  const { products, total, checkoutData } = useChekoutStore()
+  const { products, total, checkoutData, payment } = useChekoutStore()
 
   return (
     <div className={cls.main}>
@@ -45,7 +42,7 @@ export const SuccessfullOrderPage: FC = () => {
         <div className={cls.block}>
           <Typography level="body-md">Order Number</Typography>
           <Button size="xs" variant="plain" postFix="copyIcon" accent>
-            {1928371928}
+            {payment?.orderReference}
           </Button>
         </div>
 
@@ -80,7 +77,11 @@ export const SuccessfullOrderPage: FC = () => {
           <div className={cls.details_content}>
             <Typography level="body-sm">Payment</Typography>
             <div className={cls.details_block}>
-              <CreditCard maskedPan="409319******6474" expiry={'2029-11'} name={'VISA'} />
+              <CreditCard
+                maskedPan={payment?.paymentMethod.pan || ''}
+                expiry={payment?.paymentMethod.expiry || ''}
+                name={payment?.paymentMethod?.name || 'CARD'}
+              />
             </div>
           </div>
         </div>

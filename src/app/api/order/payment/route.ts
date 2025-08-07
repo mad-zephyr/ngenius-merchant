@@ -16,8 +16,6 @@ export async function POST(req: NextRequest) {
 
   const token = await getAccessToken()
 
-  console.log('VALUE: ', toMinorUnits(rest.amount.value))
-
   const data = {
     action: 'SALE',
     amount: {
@@ -25,11 +23,10 @@ export async function POST(req: NextRequest) {
       value: toMinorUnits(rest.amount.value),
     },
     shippingAddress: { ...rest.shippingAddress },
-    session: { id: sessionId },
-    order: {
-      reference: `TEST-${Date.now()}`,
-    },
+    billingAddress: { ...rest.billingAddress },
 
+    // session: { id: sessionId },
+    merchantOrderReference: `TEST-${Date.now()}`,
     merchantAttributes: {
       redirectUrl: 'https://ngenius.netlify.app/order/successfull',
     },

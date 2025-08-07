@@ -4,8 +4,9 @@ import { useStore } from '@nanostores/react'
 import { atom, computed, map } from 'nanostores'
 import { useEffect, useId } from 'react'
 
+import { calculateDiscountPrice } from '../lib'
 import { mockProducts } from '../mocks'
-import { TProductCard } from '../types'
+import { NgeniusPaymentResponse, TProductCard } from '../types'
 
 type TDiscountCoupon = {
   name: string
@@ -32,15 +33,18 @@ export const $products = map<Record<string, TProductCard>>(initialProducts)
 
 export const $coupons = map<TDiscountCoupon[]>([])
 
-export const $totalDiscount = computed([$products, $coupons], (products, coupons) => {
-  const couponDisc = coupons.reduce((acc, { discount }) => acc + discount, 0)
+export const $subTotal = computed($products, (products) => {
+  return Object.values(products).reduce((acc, { price, quantity }) => {
+    const disPrice = calculateDiscountPrice(price.actual, price.discount)
 
-  const productDisc = Object.values(products).reduce(
-    (acc, cur) => acc + (cur.price.discount ?? 0) * cur.quantity,
-    0
-  )
+    return (
+      acc + (disPrice?.discountPrice ? disPrice.discountPrice : disPrice.withoutDicount) * quantity
+    )
+  }, 0)
+})
 
-  return couponDisc + productDisc
+export const $totalDiscount = computed([$coupons], (coupons) => {
+  return coupons.reduce((acc, { discount }) => acc + discount, 0)
 })
 
 type TDeliveryType = 'standard' | 'express'
@@ -51,17 +55,17 @@ const setDeliveryType = (type: TDeliveryType) => {
   $deliveryType.set(type)
 }
 
-export const $totalPrice = computed($products, (products) => {
-  const productsArray = Object.values(products)
-  return productsArray.reduce((acc, { price, quantity }) => acc + price.actual * quantity, 0)
-})
+export const $totalPrice = computed(
+  [$subTotal, $totalDiscount, $deliveryType],
+  (subTotalPrice, discount, deliveryType) => {
+    const subtotal = subTotalPrice - discount
 
-export const $price = computed(
-  [$totalPrice, $totalDiscount, $deliveryType],
-  (price, discount, deliveryType) => {
-    const subtotal = price - discount
-
-    return deliveryType === 'standard' ? subtotal : subtotal + 15
+    switch (deliveryType) {
+      case 'express':
+        return subtotal + 15
+      default:
+        return subtotal
+    }
   }
 )
 
@@ -146,13 +150,19 @@ export const setCheckoutData = (data: TCheckoutData) => {
   $checkoutData.set(data)
 }
 
+export const $payment = atom<NgeniusPaymentResponse | null>(null)
+
+function savePayment(res: NgeniusPaymentResponse) {
+  $payment.set(res)
+}
+
 export const useChekoutStore = () => {
   const generatedChekoutFormId = useId()
   const products = useStore($products)
-  const price = useStore($totalPrice)
   const discount = useStore($totalDiscount)
   const coupons = useStore($coupons)
-  const total = useStore($price)
+  const total = useStore($totalPrice)
+  const subTotal = useStore($subTotal)
   const isFormValid = useStore($isFormValid)
   const shouldTriggerFormValidation = useStore($triggerFormValidation)
   const formSubmitCount = useStore($formSubmitCount)
@@ -160,6 +170,7 @@ export const useChekoutStore = () => {
   const checkOutFormId = useStore($checkOutFormId)
   const checkoutData = useStore($checkoutData)
   const deliveryType = useStore($deliveryType)
+  const payment = useStore($payment)
 
   const setCheckoutFormId = (id: string) => {
     $checkOutFormId.set(id)
@@ -172,6 +183,8 @@ export const useChekoutStore = () => {
   }, [checkOutFormId, generatedChekoutFormId])
 
   return {
+    payment,
+    savePayment,
     setCheckoutFormId,
     setDeliveryType,
     deliveryType,
@@ -180,7 +193,7 @@ export const useChekoutStore = () => {
     total,
     coupons,
     discount,
-    price,
+    subTotal,
     isFormValid,
     shouldTriggerFormValidation,
     formSubmitCount,

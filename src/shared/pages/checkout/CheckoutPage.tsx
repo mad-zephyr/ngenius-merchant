@@ -5,11 +5,12 @@ import { FC, PropsWithChildren } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Link, Typography } from '@/shared/ui'
+import { PaymentMethodForm } from '@/shared/widgets'
 
 import classes from './styles.module.sass'
-import { DeliveryDetailForm, detailsFormSchema, OrderSummary } from './ui'
+import { DeliveryDetailForm, detailsFormSchema, OrderSummary, TDetailsForm } from './ui'
 
-const defaultValues = {
+const defaultValues: TDetailsForm = {
   email: '',
   country: '',
   firstName: '',
@@ -19,7 +20,7 @@ const defaultValues = {
   city: '',
   state: '',
   zip: '',
-  delivery: 'express',
+  delivery: 'standard',
 }
 
 export const CheckoutPage: FC<PropsWithChildren> = () => {
@@ -42,7 +43,7 @@ export const CheckoutPage: FC<PropsWithChildren> = () => {
         </div>
 
         <div className={classes.left}>
-          <DeliveryDetailForm />
+          <DeliveryDetailForm paymentForm={<PaymentMethodForm />} />
         </div>
 
         <div className={classes.right}>

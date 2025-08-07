@@ -9,13 +9,15 @@ import { Typography } from '@/shared/ui'
 import cls from './styles.module.sass'
 
 export const OrderSummaryDetails: FC = () => {
-  const { price, discount, deliveryType } = useChekoutStore()
+  const { subTotal, discount, deliveryType } = useChekoutStore()
+
+  console.log('SUBTOTAL: ', subTotal)
 
   return (
     <div className={cls.main}>
       <div className={cls.row}>
         <Typography level="body-xs">Subtotal</Typography>
-        <Typography level="body-xs">${fr.format(price)}</Typography>
+        <Typography level="body-xs">${fr.format(subTotal)}</Typography>
       </div>
       <div className={cls.row}>
         <Typography level="body-xs">Shipping</Typography>

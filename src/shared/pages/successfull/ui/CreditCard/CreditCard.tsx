@@ -6,7 +6,7 @@ import { placeholderShimmer, Typography } from '@/shared/ui'
 import cls from './styles.module.sass'
 
 type TCreditCard = {
-  name?: 'VISA' | 'MASTER'
+  name?: 'VISA' | 'MASTERCARD' | 'CARD'
   maskedPan: string
   expiry: string
 }

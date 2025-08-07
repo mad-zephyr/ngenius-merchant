@@ -4,6 +4,7 @@ import ArrowRight from './arrowRight.svg'
 import CopyIcon from './copyIcon.svg'
 import CouponIcon from './coupon.svg'
 import CrossIcon from './crossIcon.svg'
+import LoaderIcon from './loader.svg'
 import MinusIcon from './minus.svg'
 import PlusIcon from './plus.svg'
 import Question from './question.svg'
@@ -20,6 +21,7 @@ export type TIconNames =
   | 'arrowSquareLeft'
   | 'crossIcon'
   | 'copyIcon'
+  | 'loader'
 
 type TIcon = {
   name?: TIconNames
@@ -29,10 +31,10 @@ type TIcon = {
 export const Icon: FC<TIcon> = ({ name, onClick }) => {
   switch (name) {
     case 'arrowRight':
-      return <ArrowRight onClick={onClick} />
+      return <ArrowRight />
 
     case 'coupon':
-      return <CouponIcon onClick={onClick} />
+      return <CouponIcon />
 
     case 'minus':
       return <MinusIcon onClick={onClick} />
@@ -44,16 +46,19 @@ export const Icon: FC<TIcon> = ({ name, onClick }) => {
       return <Question onClick={onClick} />
 
     case 'secure':
-      return <Secure onClick={onClick} />
+      return <Secure />
 
     case 'arrowSquareLeft':
-      return <ArrowSquareLeft onClick={onClick} />
+      return <ArrowSquareLeft />
 
     case 'crossIcon':
       return <CrossIcon onClick={onClick} />
 
     case 'copyIcon':
       return <CopyIcon onClick={onClick} />
+
+    case 'loader':
+      return <LoaderIcon />
 
     default:
       return <></>

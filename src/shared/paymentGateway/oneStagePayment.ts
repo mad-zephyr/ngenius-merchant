@@ -7,12 +7,6 @@ import {
 import { getAccessToken } from './getAccessToken'
 import { paymentApi } from './paymentApi'
 
-// action	Order type	"AUTH", "SALE", "PURCHASE"
-// amount { }	Amount block	N/A
-// amount.currencyCode	Order currency	"AED", "USD", "EUR"
-// amount.value	Order amount	1000 (minor units)
-// emailAddress	Payer's email address	customer@test.com
-
 export const createOneStagePayment = async (outletRef: string, payload: CreateOrderRequest) => {
   const token = await getAccessToken()
 

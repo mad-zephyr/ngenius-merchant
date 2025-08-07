@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { FC } from 'react'
 
-import { fr } from '@/shared/lib'
+import { currencySignMap, fr } from '@/shared/lib'
 import { useChekoutStore } from '@/shared/store/useChekoutStore'
 import { Button, Typography } from '@/shared/ui'
 
@@ -14,18 +14,10 @@ type TOrderSummary = {
   currency: 'USD' | 'EUR' | 'AED'
 }
 
-type Keys = Pick<TOrderSummary, 'currency'>['currency']
-
 export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
   const router = useRouter()
 
-  const { total, price, deliveryType } = useChekoutStore()
-
-  const currnsySignMap: Record<Keys, string> = {
-    USD: '$',
-    EUR: '€',
-    AED: 'AED',
-  }
+  const { total, subTotal, deliveryType } = useChekoutStore()
 
   const handleNavigate = () => {
     router.push('/cart/checkout')
@@ -37,8 +29,8 @@ export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
         <div className={classes.row}>
           <Typography level="body-sm">Subtotal</Typography>
           <Typography level="body-lg" className={classes.priceDetails}>
-            {currnsySignMap[currency]}
-            {fr.format(price)}
+            {currencySignMap[currency]}
+            {fr.format(subTotal)}
           </Typography>
         </div>
         <div className={classes.row}>
@@ -56,7 +48,7 @@ export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
           Total
         </Typography>
         <Typography level="title-lg" className={classes.price}>
-          {currnsySignMap[currency]}
+          {currencySignMap[currency]}
           {fr.format(total)}
         </Typography>
       </div>

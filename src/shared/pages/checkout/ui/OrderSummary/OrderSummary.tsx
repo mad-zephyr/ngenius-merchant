@@ -1,7 +1,8 @@
 'use client'
 
+import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { SubmitHandler, useFormContext } from 'react-hook-form'
 
 import { api } from '@/shared/api'
@@ -11,10 +12,9 @@ import { useChekoutStore } from '@/shared/store/useChekoutStore'
 import { CreateOrderRequest } from '@/shared/types'
 import { NgeniusPaymentResponse } from '@/shared/types/ngenius-order'
 import { Button, Typography } from '@/shared/ui'
+import { OrderProduct, OrderSummaryDetails } from '@/shared/widgets'
 
 import { TDetailsForm } from '../DeliveryDetailForm'
-import { OrderProduct } from './OrderProduct'
-import { OrderSummaryDetails } from './OrderSummaryDetails'
 import cls from './styles.module.sass'
 
 type OrderPaymentRequest = CreateOrderRequest & {
@@ -24,8 +24,16 @@ type OrderPaymentRequest = CreateOrderRequest & {
 
 export const OrderSummary: FC = () => {
   const router = useRouter()
-  const { products, total, isFormValid, checkOutFormId, setCheckoutData, setDeliveryType } =
-    useChekoutStore()
+  const [checkoutInProgress, setCheckoutInProgress] = useState(false)
+  const {
+    products,
+    total,
+    isFormValid,
+    checkOutFormId,
+    setCheckoutData,
+    setDeliveryType,
+    savePayment,
+  } = useChekoutStore()
   const { ni } = useNgeniusStore()
   const { handleSubmit, watch } = useFormContext<TDetailsForm>()
   const productsArray = Object.values(products)
@@ -38,42 +46,71 @@ export const OrderSummary: FC = () => {
 
   const handlePay: SubmitHandler<TDetailsForm> = async (data) => {
     if (ni && isFormValid) {
+      setCheckoutInProgress(true)
+
       const sessionId = await ni?.generateSessionId()
 
       setCheckoutData(data)
 
-      const paymentResponse = await api.post<
-        unknown,
-        { data: NgeniusPaymentResponse },
-        OrderPaymentRequest
-      >('/api/order/payment', {
-        sessionId: sessionId.session_id,
-        outletRef: process.env.NEXT_PUBLIC_OUTLET_REF || 'a785ec9f-6605-418f-9654-3215ba5f4882',
-        action: 'PURCHASE',
-        amount: { currencyCode: 'AED', value: total },
+      try {
+        const paymentResponse = await api.post<
+          unknown,
+          { data: NgeniusPaymentResponse },
+          OrderPaymentRequest
+        >('/api/order/payment', {
+          sessionId: sessionId.session_id,
+          outletRef: process.env.NEXT_PUBLIC_OUTLET_REF || 'a785ec9f-6605-418f-9654-3215ba5f4882',
+          action: 'PURCHASE',
+          amount: { currencyCode: 'AED', value: total },
 
-        shippingAddress: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          city: data.city,
-          countryCode: data.country,
-        },
-        emailAddress: data.email,
-      })
+          billingAddress: {
+            address1: data.adress,
+            address2: data.aditionalAdress,
+            city: data.city,
+            countryCode: data.country,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            postalCode: data.zip,
+            state: data.state,
+          },
 
-      const { status } = await ni.handlePaymentResponse(paymentResponse.data)
+          shippingAddress: {
+            address1: data.adress,
+            address2: data.aditionalAdress,
+            city: data.city,
+            countryCode: data.country,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            postalCode: data.zip,
+            state: data.state,
+          },
+          emailAddress: data.email,
+        })
 
-      if (status === ni.paymentStates.AUTHORISED || status === ni.paymentStates.CAPTURED) {
-        // Same as before this signals successful payment
-        router.replace('/cart/successfull')
-      } else if (
-        status === ni.paymentStates.FAILED ||
-        // A new state to look out for is 3DS Challenge failure
-        status === ni.paymentStates.THREE_DS_FAILURE
-      ) {
-        // payment failure signal
-      } else {
-        // FAILED authentications scenarios
+        const { status } = await ni.handlePaymentResponse(paymentResponse.data)
+
+        if (status === ni.paymentStates.AUTHORISED || status === ni.paymentStates.CAPTURED) {
+          // Same as before this signals successful payment
+
+          savePayment(paymentResponse.data)
+          setCheckoutInProgress(false)
+
+          router.replace('/cart/successfull')
+        } else if (
+          status === ni.paymentStates.FAILED ||
+          // A new state to look out for is 3DS Challenge failure
+          status === ni.paymentStates.THREE_DS_FAILURE
+        ) {
+          // payment failure signal
+        } else {
+          // FAILED authentications scenarios
+        }
+      } catch (err: unknown) {
+        const error = err as AxiosError
+
+        setCheckoutInProgress(false)
+
+        console.log('CHECKOUT ERROR: ', error)
       }
     }
   }
@@ -97,11 +134,11 @@ export const OrderSummary: FC = () => {
         variant="primary"
         size="md"
         type="submit"
-        preFix="secure"
+        preFix={checkoutInProgress ? 'loader' : 'secure'}
         onClick={handleSubmit(handlePay)}
-        disabled={!isFormValid}
+        disabled={!isFormValid || checkoutInProgress}
       >
-        Confirm order
+        {checkoutInProgress ? 'Order confirmation in progress' : 'Confirm order'}
       </Button>
     </section>
   )

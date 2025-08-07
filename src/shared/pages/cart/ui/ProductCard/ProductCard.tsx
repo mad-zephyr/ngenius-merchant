@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { FC } from 'react'
 
-import { fr } from '@/shared/lib'
+import { calculateDiscountPrice, currencySignMap, fr } from '@/shared/lib'
 import { TProductCard } from '@/shared/types/app'
 import { Button, placeholderShimmer, Typography } from '@/shared/ui'
 
@@ -16,6 +16,10 @@ type TProdCard = {
 
 export const ProductCard: FC<TProdCard> = ({ data, onChange, onRemove }) => {
   const { sku, quantity, cover, description, details, name, price } = data
+
+  const calculated = calculateDiscountPrice(price.actual, price.discount)
+  const currencySign = currencySignMap[price.currency]
+  const hasDiscount = !!calculated.discountPrice
 
   const handleChangeQuantity = (value: number) => {
     if (value > 0) {
@@ -44,7 +48,18 @@ export const ProductCard: FC<TProdCard> = ({ data, onChange, onRemove }) => {
             </Button>
           </div>
           <div className={classes.footerRight}>
-            {price.currency} {fr.format(Number(price.actual * quantity))}
+            <Typography level="title-sm">
+              {currencySign}
+              {calculated.discountPrice
+                ? fr.format(calculated.discountPrice * quantity)
+                : fr.format(calculated.withoutDicount * quantity)}
+            </Typography>
+            {hasDiscount && (
+              <Typography level="title-sm">
+                {currencySign}
+                {fr.format(calculated.withoutDicount * quantity)}
+              </Typography>
+            )}
           </div>
         </div>
       </div>

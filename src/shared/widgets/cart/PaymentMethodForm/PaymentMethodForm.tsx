@@ -8,7 +8,9 @@ import { useChekoutStore, useNgeniusStore } from '@/shared/store'
 import { patchCustomElementsDefineOnce } from './lib'
 import cls from './style.module.sass'
 
-export const PaymentMethodForm: FC = () => {
+export type TPaymentMethodForm = { t?: unknown }
+
+export const PaymentMethodForm: FC<TPaymentMethodForm> = () => {
   patchCustomElementsDefineOnce()
   const { setIsFormValid } = useChekoutStore()
 

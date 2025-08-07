@@ -1,16 +1,20 @@
 'use client'
 
-import { FC, useEffect } from 'react'
+import { FC, ReactElement, useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
 import { useChekoutStore } from '@/shared/store'
 import { RadioCardGroup, RadioCardItem, TextField, Typography } from '@/shared/ui'
+import { TPaymentMethodForm } from '@/shared/widgets/cart/PaymentMethodForm/PaymentMethodForm'
 
 import { TDetailsForm } from './DetailsFormSchema'
 import cls from './styles.module.sass'
-import { PaymentMethodForm } from './ui'
 
-export const DeliveryDetailForm: FC = () => {
+type TDeliveryDetailForm = {
+  paymentForm: ReactElement<TPaymentMethodForm>
+}
+
+export const DeliveryDetailForm: FC<TDeliveryDetailForm> = ({ paymentForm }) => {
   const { setIsFormValid, shouldTriggerFormValidation, checkOutFormId } = useChekoutStore()
 
   const {
@@ -147,7 +151,7 @@ export const DeliveryDetailForm: FC = () => {
       </div>
       <div className={cls.section_item}>
         <Typography level="title-lg">Payment Method</Typography>
-        <PaymentMethodForm />
+        {paymentForm}
       </div>
     </form>
   )
