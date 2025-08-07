@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { FC } from 'react'
 
 import { fr } from '@/shared/lib'
@@ -15,6 +16,7 @@ import cls from './styles.module.sass'
 import { CreditCard } from './ui'
 
 export const SuccessfullOrderPage: FC = () => {
+  const route = useRouter()
   const { products, total, checkoutData } = useChekoutStore()
 
   return (
@@ -78,7 +80,13 @@ export const SuccessfullOrderPage: FC = () => {
           </div>
         </div>
 
-        <Button variant="secondary" size="md" type="submit" postFix="arrowRight">
+        <Button
+          variant="secondary"
+          size="md"
+          type="submit"
+          postFix="arrowRight"
+          onClick={() => route.push('/')}
+        >
           Continue Shopping
         </Button>
       </div>

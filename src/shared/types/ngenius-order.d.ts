@@ -141,6 +141,118 @@ type TError = {
   domain: string
 }
 
+/**
+ * ISO-3166-2 country codes, ISO-4217 currencies, языки и т. д. вали-
+ * дируйте отдельно (enum, zod, yup) — здесь оставлены как string.
+ */
+
+/** Адрес плательщика или получателя */
+export interface Address {
+  firstName: string // *   – имя
+  lastName: string // *   – фамилия
+  address1: string // **  – улица, дом
+  address2?: string //      – корпус/квартира
+  city: string // **  – город
+  state?: string //      – регион / штат
+  postalCode?: string //      – индекс
+  countryCode: string // **  – ISO-3166-2, напр. "AE"
+  [k: string]: unknown // будущее расширение
+}
+
+/** Блок redirect’ов и поведения платёжной страницы */
+export interface MerchantAttributes {
+  redirectUrl?: string
+  cancelUrl?: string
+  cancelText?: string
+  skipConfirmationPage?: boolean
+  skip3DS?: boolean
+  [k: string]: unknown
+}
+
+/** Платёж по токенизированной карте */
+export interface SavedCard {
+  cardToken: string
+  cardholderName?: string
+  expiry?: string // YYYY-MM
+  maskedPan?: string
+  scheme?: string // VISA, MASTERCARD …
+  cvv?: string // вводимый CVV (только на input)
+  recaptureCsc?: boolean
+  [k: string]: unknown
+}
+
+/** Данные для схемного PayFac-интегратора */
+export interface PayFacData {
+  payFacId: string // 11-digit
+  subMerchantId: string // 15-digit
+  subMerchantMcc?: string // 4-digit MCC
+  [k: string]: unknown
+}
+
+/** Кастомный динамический дескриптор */
+export interface DynamicDescriptor {
+  merchantName: string // "PayFac*SubMerchant"
+  merchantAddress?: {
+    city?: string
+    state?: string
+    country?: string
+    [k: string]: unknown
+  }
+  [k: string]: unknown
+}
+
+/** Основной объект, который отправляется в Hosted-Session API */
+export interface HostedSessionPaymentRequest {
+  /** "SALE" – сразу списать, "AUTH" – только авторизовать, "PURCHASE" – для APM */
+  action: 'SALE' | 'AUTH' | 'PURCHASE'
+
+  /** Сумма в **минорных** единицах (100 = 1.00 AED) */
+  amount: {
+    currencyCode: string
+    value: number
+    [k: string]: unknown
+  }
+
+  /** Email плательщика (для чеков / webhooks) */
+  emailAddress?: string
+
+  /** "en", "ar", "fr" или любое поддерживаемое значение */
+  language?: string
+
+  /** URL`ы и флаги поведения Hosted Session Pay Page */
+  merchantAttributes?: MerchantAttributes
+
+  /** Внутренняя ссылка на заказ в вашей системе */
+  merchantOrderReference?: string
+
+  /** Кол-во разрешённых повторных попыток (1-5) */
+  paymentAttempts?: number
+
+  /** Адрес плательщика (обязателен) */
+  billingAddress?: Address
+
+  /** Адрес доставки (если есть физические товары) */
+  shippingAddress?: Address
+
+  /** Свободные 100 KV-пар; отображаются в портале и отчётах */
+  merchantDefinedData?: Record<string, string>
+
+  /** Платёж по токену */
+  savedCard?: SavedCard
+
+  /** Информация PayFac / суб-мерчанта */
+  payFacData?: PayFacData
+
+  /** Кастомный dynamic descriptor */
+  dynamicDescriptor?: DynamicDescriptor
+
+  /** Канал "MoTo" для MO/TO транзакций */
+  channel?: 'MoTo' | string
+
+  /** Любые будущие поля, которые N-Genius добавит */
+  [k: string]: unknown
+}
+
 /** Ответ N-Genius “Hosted-Session Payment” */
 export interface NgeniusPaymentResponse {
   /** URN вида: urn:payment:uuid */

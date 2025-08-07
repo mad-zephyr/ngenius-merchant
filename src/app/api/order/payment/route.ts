@@ -2,7 +2,11 @@ import { AxiosError } from 'axios'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { getAccessToken, paymentApi } from '@/shared'
-import { CreateOrderRequest, NgeniusPaymentResponse } from '@/shared/types/ngenius-order'
+import {
+  CreateOrderRequest,
+  HostedSessionPaymentRequest,
+  NgeniusPaymentResponse,
+} from '@/shared/types/ngenius-order'
 
 export async function POST(req: NextRequest) {
   const { sessionId, outletRef, ...rest } = (await req.json()) as CreateOrderRequest & {
@@ -10,23 +14,25 @@ export async function POST(req: NextRequest) {
     outletRef: string
   }
 
+  const token = await getAccessToken()
+
   const data = {
     action: 'SALE',
     amount: {
       currencyCode: rest.amount.currencyCode,
       value: rest.amount.value * 100,
     },
-    // session: { id: sessionId },
-    // order: {
-    //   reference: `TEST-${Date.now()}`,
-    // },
+    shippingAddress: { ...rest.shippingAddress },
+    session: { id: sessionId },
+    order: {
+      reference: `TEST-${Date.now()}`,
+    },
+
     merchantAttributes: {
       redirectUrl: 'https://ngenius.netlify.app/order/successfull',
     },
     emailAddress: rest.emailAddress,
-  }
-
-  const token = await getAccessToken()
+  } satisfies HostedSessionPaymentRequest
 
   const options = {
     headers: {
@@ -36,11 +42,11 @@ export async function POST(req: NextRequest) {
     },
   }
   try {
-    const response = await paymentApi.post<unknown, NgeniusPaymentResponse, unknown>(
-      `/transactions/outlets/${outletRef}/payment/hosted-session/${sessionId}`,
-      data,
-      options
-    )
+    const response = await paymentApi.post<
+      unknown,
+      NgeniusPaymentResponse,
+      HostedSessionPaymentRequest
+    >(`/transactions/outlets/${outletRef}/payment/hosted-session/${sessionId}`, data, options)
 
     console.log('PAYMENT RESPONSE: ', response.data)
 
