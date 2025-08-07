@@ -3,7 +3,7 @@ import { FC } from 'react'
 
 import { fr } from '@/shared/lib'
 import { TProductCard } from '@/shared/types/app'
-import { Typography } from '@/shared/ui'
+import { placeholderShimmer, Typography } from '@/shared/ui'
 
 import cls from './styles.module.sass'
 
@@ -12,7 +12,7 @@ export const OrderProduct: FC<TProductCard> = (props) => {
   return (
     <div className={cls.main}>
       <div className={cls.image}>
-        <Image src={cover} alt={name} fill />
+        <Image src={cover} alt={name} fill placeholder={placeholderShimmer()} />
       </div>
       <div className={cls.details}>
         <Typography level="title-lg">{name}</Typography>

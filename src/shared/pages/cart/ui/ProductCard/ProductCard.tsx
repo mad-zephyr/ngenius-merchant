@@ -3,7 +3,7 @@ import { FC } from 'react'
 
 import { fr } from '@/shared/lib'
 import { TProductCard } from '@/shared/types/app'
-import { Button, Typography } from '@/shared/ui'
+import { Button, placeholderShimmer, Typography } from '@/shared/ui'
 
 import { QuantitySelector } from '../QuantitySelector'
 import classes from './styles.module.sass'
@@ -30,7 +30,7 @@ export const ProductCard: FC<TProdCard> = ({ data, onChange, onRemove }) => {
   return (
     <div id={sku} className={classes.main}>
       <div className={classes.image}>
-        <Image src={cover} alt="" fill />
+        <Image src={cover} alt="" fill placeholder={placeholderShimmer()} />
       </div>
       <div className={classes.content}>
         <Typography level="h4">{name}</Typography>

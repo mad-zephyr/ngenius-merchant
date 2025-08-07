@@ -6,7 +6,7 @@ import { FC } from 'react'
 
 import { fr } from '@/shared/lib'
 import { useChekoutStore } from '@/shared/store'
-import { Button, Typography } from '@/shared/ui'
+import { Button, placeholderShimmer, Typography } from '@/shared/ui'
 
 // eslint-disable-next-line no-restricted-imports, import/no-internal-modules
 import { OrderProduct } from '../checkout/ui/OrderSummary/OrderProduct'
@@ -23,7 +23,12 @@ export const SuccessfullOrderPage: FC = () => {
     <div className={cls.main}>
       <div className={cls.left}>
         <div className={cls.image}>
-          <Image src={'/assets/success-purchase.jpg'} alt="successfull purchase" fill />
+          <Image
+            src={'/assets/success-purchase.jpg'}
+            alt="successfull purchase"
+            fill
+            placeholder={placeholderShimmer()}
+          />
         </div>
       </div>
       <div className={cls.right}>
