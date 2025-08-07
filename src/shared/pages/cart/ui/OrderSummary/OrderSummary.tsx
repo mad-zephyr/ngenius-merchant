@@ -19,7 +19,7 @@ type Keys = Pick<TOrderSummary, 'currency'>['currency']
 export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
   const router = useRouter()
 
-  const { total, price } = useChekoutStore()
+  const { total, price, deliveryType } = useChekoutStore()
 
   const currnsySignMap: Record<Keys, string> = {
     USD: '$',
@@ -44,7 +44,7 @@ export const OrderSummary: FC<TOrderSummary> = ({ currency = 'USD' }) => {
         <div className={classes.row}>
           <Typography level="body-sm">Shipping</Typography>
           <Typography level="body-lg" className={classes.priceDetails}>
-            FREE
+            {deliveryType === 'express' ? '$15' : 'FREE'}
           </Typography>
         </div>
 

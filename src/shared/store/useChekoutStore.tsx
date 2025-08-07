@@ -43,9 +43,11 @@ export const $totalDiscount = computed([$products, $coupons], (products, coupons
   return couponDisc + productDisc
 })
 
-const $deliveryType = atom<'standard' | 'express'>('standard')
+type TDeliveryType = 'standard' | 'express'
 
-const setDeliveryType = (type: 'standard' | 'express') => {
+const $deliveryType = atom<TDeliveryType>('standard')
+
+const setDeliveryType = (type: TDeliveryType) => {
   $deliveryType.set(type)
 }
 

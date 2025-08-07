@@ -1,5 +1,6 @@
 export { Badge } from './Badge'
 export { Button } from './Button'
+export { placeholderShimmer } from './imageShimmer'
 export { Link } from './Link'
 export { RadioCardGroup, RadioCardItem } from './RadioCardComponent'
 export { TextField } from './TextField'
