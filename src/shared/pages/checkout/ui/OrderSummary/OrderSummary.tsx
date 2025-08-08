@@ -54,16 +54,6 @@ export const OrderSummary: FC = () => {
     setDeliveryType(delivery as 'standard' | 'express')
   }, [delivery, setDeliveryType])
 
-  // useEffect(() => {
-  //   if (isOpen3ds) {
-  //     lock()
-  //   }
-
-  //   return () => {
-  //     unlock()
-  //   }
-  // }, [isOpen3ds, lock, unlock])
-
   useEffect(() => {
     if (payment && ni) {
       setTimeout(() => {

@@ -14,7 +14,12 @@ import { CreditCard } from './ui'
 
 export const SuccessfullOrderPage: FC = () => {
   const route = useRouter()
-  const { products, total, checkoutData, payment } = useChekoutStore()
+  const { products, total, checkoutData, payment, savePayment } = useChekoutStore()
+
+  const handleNavigate = () => {
+    savePayment(null)
+    route.push('/')
+  }
 
   return (
     <div className={cls.main}>
@@ -87,7 +92,7 @@ export const SuccessfullOrderPage: FC = () => {
           size="md"
           type="submit"
           postFix="arrowRight"
-          onClick={() => route.push('/')}
+          onClick={handleNavigate}
         >
           Continue Shopping
         </Button>

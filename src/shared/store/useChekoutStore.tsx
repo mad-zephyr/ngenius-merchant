@@ -151,7 +151,7 @@ export const setCheckoutData = (data: TCheckoutData) => {
 
 export const $payment = atom<NgeniusPaymentResponse | null>(null)
 
-function savePayment(res: NgeniusPaymentResponse) {
+function savePayment(res: NgeniusPaymentResponse | null) {
   $payment.set(res)
 }
 
