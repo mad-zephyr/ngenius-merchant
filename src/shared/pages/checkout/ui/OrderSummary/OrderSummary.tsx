@@ -59,7 +59,10 @@ export const OrderSummary: FC = () => {
       setTimeout(() => {
         ni.handlePaymentResponse(payment, {
           mountId: DS_BLOCK_ID,
-          style: { width: 500, height: 500 },
+          style: {
+            width: 500,
+            height: 500,
+          },
         }).then(({ status }) => {
           console.log('PAYMENT STATU UE EFFECT: ', status)
 
@@ -125,12 +128,9 @@ export const OrderSummary: FC = () => {
         )
 
         if (res.data) {
-          console.log('PAYMENT RESPONSE: ', res.data)
           savePayment(res.data)
 
-          if (isAwait3DS(res.data)) {
-            setIsOpen3ds(true)
-          }
+          setIsOpen3ds(isAwait3DS(res.data))
         }
       } catch (err: unknown) {
         const error = err as AxiosError

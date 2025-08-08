@@ -1,6 +1,7 @@
 import { FC } from 'react'
 
 import ArrowRight from './arrowRight.svg'
+import CheckIcon from './checkIcon.svg'
 import CopyIcon from './copyIcon.svg'
 import CouponIcon from './coupon.svg'
 import CrossIcon from './crossIcon.svg'
@@ -22,6 +23,7 @@ export type TIconNames =
   | 'crossIcon'
   | 'copyIcon'
   | 'loader'
+  | 'check'
 
 type TIcon = {
   name?: TIconNames
@@ -59,6 +61,9 @@ export const Icon: FC<TIcon> = ({ name, onClick }) => {
 
     case 'loader':
       return <LoaderIcon />
+
+    case 'check':
+      return <CheckIcon />
 
     default:
       return <></>

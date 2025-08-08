@@ -13,7 +13,10 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <Link href="/cart">
-        <h1>Go to cart page</h1>
+        <h1>Go to Cart page</h1>
+      </Link>
+      <Link href="/subscription">
+        <h1>Go to Subscription page</h1>
       </Link>
     </div>
   )

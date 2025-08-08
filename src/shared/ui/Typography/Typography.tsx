@@ -23,72 +23,21 @@ export const Typography: FC<PropsWithChildren<TTypography>> = ({ level, classNam
 
   switch (level) {
     case 'h1':
-      return (
-        <div className={classes}>
-          <h1>{children}</h1>
-        </div>
-      )
+      return <h1 className={classes}>{children}</h1>
     case 'h2':
-      return (
-        <div className={classes}>
-          <h2>{children}</h2>
-        </div>
-      )
+      return <h2 className={classes}>{children}</h2>
     case 'h3':
-      return (
-        <div className={classes}>
-          <h3>{children}</h3>
-        </div>
-      )
+      return <h3 className={classes}>{children}</h3>
     case 'h4':
-      return (
-        <div className={classes}>
-          <h4>{children}</h4>
-        </div>
-      )
+      return <h4 className={classes}>{children}</h4>
     case 'title-lg':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     case 'title-md':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     case 'title-sm':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     case 'body-lg':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     case 'body-md':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     case 'body-sm':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     case 'body-xs':
-      return (
-        <div className={classes}>
-          <p>{children}</p>
-        </div>
-      )
     default:
-      return <span>{children}</span>
+      return <p className={classes}>{children}</p>
   }
 }
