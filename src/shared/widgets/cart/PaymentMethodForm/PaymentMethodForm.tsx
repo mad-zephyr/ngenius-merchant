@@ -29,12 +29,16 @@ export const PaymentMethodForm: FC<TPaymentMethodForm> = () => {
       style: {
         main: {
           backgroundColor: 'white',
-          fontFamily: 'Geist',
+          fontFamily: 'Noto Sans',
+          fontUrl:
+            'https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap',
           padding: '0px',
           height: '38px',
         },
         base: {
-          fontFamily: 'Geist',
+          fontUrl:
+            'https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap',
+          fontFamily: 'Noto Sans',
           borderRadius: '4px',
           padding: '0px',
           minHeight: '38px',
@@ -44,6 +48,9 @@ export const PaymentMethodForm: FC<TPaymentMethodForm> = () => {
           rowGap: '1rem',
         },
         input: {
+          fontUrl:
+            'https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap',
+          fontFamily: 'Noto Sans',
           borderWidth: '1px',
           background: '#fafafa',
           borderColor: '#e5e5e5',

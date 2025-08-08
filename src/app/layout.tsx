@@ -8,8 +8,8 @@ import { BASE_PATH } from '@/shared/lib/constants'
 
 import classes from './layout.module.sass'
 
-const geistSans = Noto_Sans({
-  variable: '--font-geist-sans',
+const notoSans = Noto_Sans({
+  variable: '--font-main',
   subsets: ['latin'],
 })
 
@@ -47,7 +47,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const classname = clsx(geistSans.variable, geistMono.variable, classes.layout)
+  const classname = clsx(notoSans.variable, geistMono.variable, classes.layout)
 
   return (
     <>
