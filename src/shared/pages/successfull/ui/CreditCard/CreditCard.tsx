@@ -1,17 +1,20 @@
 import Image from 'next/image'
 import { FC } from 'react'
 
+import { PaymentMethod } from '@/shared/types/ngenius-order'
 import { placeholderShimmer, Typography } from '@/shared/ui'
 
 import cls from './styles.module.sass'
 
 type TCreditCard = {
-  name?: 'VISA' | 'MASTERCARD' | 'CARD'
-  maskedPan: string
-  expiry: string
+  data?: PaymentMethod
 }
 
-export const CreditCard: FC<TCreditCard> = ({ name = 'card', expiry, maskedPan }) => {
+export const CreditCard: FC<TCreditCard> = ({ data }) => {
+  const pan = data?.pan || ''
+  const expiry = data?.expiry || ''
+  const name = data?.name || 'CARD'
+
   return (
     <div className={cls.main}>
       <Image
@@ -23,7 +26,7 @@ export const CreditCard: FC<TCreditCard> = ({ name = 'card', expiry, maskedPan }
       />
 
       <div className={cls.group}>
-        <Typography level="body-xs">Ending with {maskedPan?.replace(/\d+\*+/g, '')}</Typography>
+        <Typography level="body-xs">Ending with {pan?.replace(/\d+\*+/g, '')}</Typography>
         <Typography level="body-xs">Expires {expiry}</Typography>
       </div>
     </div>

@@ -31,25 +31,27 @@ export const CheckoutPage: FC<PropsWithChildren> = () => {
   })
 
   return (
-    <FormProvider {...methods}>
-      <div className={classes.main}>
-        <div className={classes.header}>
-          <Link href="/cart" size="sm" prefix="arrowSquareLeft">
-            Back to Shopping Cart
-          </Link>
-        </div>
-        <div className={classes.title}>
-          <Typography level="h3">Checkout</Typography>
-        </div>
+    <>
+      <FormProvider {...methods}>
+        <div className={classes.main}>
+          <div className={classes.header}>
+            <Link href="/cart" size="sm" prefix="arrowSquareLeft">
+              Back to Shopping Cart
+            </Link>
+          </div>
+          <div className={classes.title}>
+            <Typography level="h3">Checkout</Typography>
+          </div>
 
-        <div className={classes.left}>
-          <DeliveryDetailForm paymentForm={<PaymentMethodForm />} />
-        </div>
+          <div className={classes.left}>
+            <DeliveryDetailForm paymentForm={<PaymentMethodForm />} />
+          </div>
 
-        <div className={classes.right}>
-          <OrderSummary />
+          <div className={classes.right}>
+            <OrderSummary />
+          </div>
         </div>
-      </div>
-    </FormProvider>
+      </FormProvider>
+    </>
   )
 }

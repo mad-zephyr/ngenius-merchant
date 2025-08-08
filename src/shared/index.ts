@@ -1,4 +1,5 @@
 export * from './api'
+export * from './hooks'
 export * from './lib'
 export { CartPage, CheckoutPage } from './pages'
 export { createOneStagePayment, getAccessToken, paymentApi } from './paymentGateway'

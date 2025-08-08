@@ -11,7 +11,7 @@ import { useNgeniusStore } from '@/shared/store'
 import { useChekoutStore } from '@/shared/store/useChekoutStore'
 import { CreateOrderRequest } from '@/shared/types'
 import { NgeniusPaymentResponse } from '@/shared/types/ngenius-order'
-import { Button, Typography } from '@/shared/ui'
+import { Button, Modal, Typography } from '@/shared/ui'
 import { OrderProduct, OrderSummaryDetails } from '@/shared/widgets'
 
 import { TDetailsForm } from '../DeliveryDetailForm'
@@ -22,8 +22,15 @@ type OrderPaymentRequest = CreateOrderRequest & {
   outletRef: string
 }
 
+export function isAwait3DS(r: NgeniusPaymentResponse) {
+  return r.state === 'AWAIT_3DS'
+}
+
+const DS_BLOCK_ID = '3ds_iframe'
+
 export const OrderSummary: FC = () => {
   const router = useRouter()
+
   const [checkoutInProgress, setCheckoutInProgress] = useState(false)
   const {
     products,
@@ -32,17 +39,58 @@ export const OrderSummary: FC = () => {
     checkOutFormId,
     setCheckoutData,
     setDeliveryType,
+    payment,
     savePayment,
   } = useChekoutStore()
+
   const { ni } = useNgeniusStore()
   const { handleSubmit, watch } = useFormContext<TDetailsForm>()
   const productsArray = Object.values(products)
+  const [isOpen3ds, setIsOpen3ds] = useState(false)
 
   const delivery = watch('delivery')
 
   useEffect(() => {
     setDeliveryType(delivery as 'standard' | 'express')
   }, [delivery, setDeliveryType])
+
+  // useEffect(() => {
+  //   if (isOpen3ds) {
+  //     lock()
+  //   }
+
+  //   return () => {
+  //     unlock()
+  //   }
+  // }, [isOpen3ds, lock, unlock])
+
+  useEffect(() => {
+    if (payment && ni) {
+      setTimeout(() => {
+        ni.handlePaymentResponse(payment, {
+          mountId: DS_BLOCK_ID,
+          style: { width: 500, height: 500 },
+        }).then(({ status }) => {
+          console.log('PAYMENT STATU UE EFFECT: ', status)
+
+          if (status === ni.paymentStates.AUTHORISED || status === ni.paymentStates.CAPTURED) {
+            // Same as before this signals successful payment
+            setCheckoutInProgress(false)
+
+            router.replace('/cart/successfull')
+          } else if (
+            status === ni.paymentStates.FAILED ||
+            // A new state to look out for is 3DS Challenge failure
+            status === ni.paymentStates.THREE_DS_FAILURE
+          ) {
+            // payment failure signal
+          } else {
+            // FAILED authentications scenarios
+          }
+        })
+      }, 100)
+    }
+  }, [ni, router, payment])
 
   const handlePay: SubmitHandler<TDetailsForm> = async (data) => {
     if (ni && isFormValid) {
@@ -53,57 +101,46 @@ export const OrderSummary: FC = () => {
       setCheckoutData(data)
 
       try {
-        const paymentResponse = await api.post<
-          unknown,
-          { data: NgeniusPaymentResponse },
-          OrderPaymentRequest
-        >('/api/order/payment', {
-          sessionId: sessionId.session_id,
-          outletRef: process.env.NEXT_PUBLIC_OUTLET_REF || 'a785ec9f-6605-418f-9654-3215ba5f4882',
-          action: 'PURCHASE',
-          amount: { currencyCode: 'AED', value: total },
+        const res = await api.post<unknown, { data: NgeniusPaymentResponse }, OrderPaymentRequest>(
+          '/api/order/payment',
+          {
+            sessionId: sessionId.session_id,
+            outletRef: process.env.NEXT_PUBLIC_OUTLET_REF || 'a785ec9f-6605-418f-9654-3215ba5f4882',
+            action: 'PURCHASE',
+            amount: { currencyCode: 'AED', value: total },
 
-          billingAddress: {
-            address1: data.adress,
-            address2: data.aditionalAdress,
-            city: data.city,
-            countryCode: data.country,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            postalCode: data.zip,
-            state: data.state,
-          },
+            billingAddress: {
+              address1: data.adress,
+              address2: data.aditionalAdress,
+              city: data.city,
+              countryCode: data.country,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              postalCode: data.zip,
+              state: data.state,
+            },
 
-          shippingAddress: {
-            address1: data.adress,
-            address2: data.aditionalAdress,
-            city: data.city,
-            countryCode: data.country,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            postalCode: data.zip,
-            state: data.state,
-          },
-          emailAddress: data.email,
-        })
+            shippingAddress: {
+              address1: data.adress,
+              address2: data.aditionalAdress,
+              city: data.city,
+              countryCode: data.country,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              postalCode: data.zip,
+              state: data.state,
+            },
+            emailAddress: data.email,
+          }
+        )
 
-        const { status } = await ni.handlePaymentResponse(paymentResponse.data)
+        if (res.data) {
+          console.log('PAYMENT RESPONSE: ', res.data)
+          savePayment(res.data)
 
-        if (status === ni.paymentStates.AUTHORISED || status === ni.paymentStates.CAPTURED) {
-          // Same as before this signals successful payment
-
-          savePayment(paymentResponse.data)
-          setCheckoutInProgress(false)
-
-          router.replace('/cart/successfull')
-        } else if (
-          status === ni.paymentStates.FAILED ||
-          // A new state to look out for is 3DS Challenge failure
-          status === ni.paymentStates.THREE_DS_FAILURE
-        ) {
-          // payment failure signal
-        } else {
-          // FAILED authentications scenarios
+          if (isAwait3DS(res.data)) {
+            setIsOpen3ds(true)
+          }
         }
       } catch (err: unknown) {
         const error = err as AxiosError
@@ -128,6 +165,10 @@ export const OrderSummary: FC = () => {
         <span>Total</span>
         <span>${fr.format(total)}</span>
       </div>
+
+      <Modal isOpen={isOpen3ds}>
+        <div id={DS_BLOCK_ID} />
+      </Modal>
 
       <Button
         id={checkOutFormId}

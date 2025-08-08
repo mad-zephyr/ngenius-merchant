@@ -53,7 +53,12 @@ declare global {
     /** mount‑id контейнера для 3‑DS iframe */
     mountId?: string
     /** размеры/стиль 3‑DS iframe */
-    style?: NiCSS
+    style?:
+      | NiCSS
+      | {
+          width?: number
+          height?: number
+        }
   }
 
   interface NiPaymentResponse {

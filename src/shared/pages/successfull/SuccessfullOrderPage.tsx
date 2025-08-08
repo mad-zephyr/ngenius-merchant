@@ -77,11 +77,7 @@ export const SuccessfullOrderPage: FC = () => {
           <div className={cls.details_content}>
             <Typography level="body-sm">Payment</Typography>
             <div className={cls.details_block}>
-              <CreditCard
-                maskedPan={payment?.paymentMethod.pan || ''}
-                expiry={payment?.paymentMethod.expiry || ''}
-                name={payment?.paymentMethod?.name || 'CARD'}
-              />
+              <CreditCard data={payment?.paymentMethod} />
             </div>
           </div>
         </div>

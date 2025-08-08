@@ -1,0 +1,40 @@
+.modal
+    position: fixed
+    width: 100dvw
+    height: 100dvh
+    z-index: 1000
+    top: 0
+    left: 0
+    background: #a1a1a154
+
+.main
+    position: absolute
+    left: 50%
+    top: 50%
+    transform: translate(-50%, -50%)
+    border-radius: 0.5rem
+    padding: 1.5rem
+    min-width: 343px
+    min-height: 248px
+    background: white
+
+.header
+    position: relative
+    display: flex
+    align-items: flex-start
+    justify-content: space-between
+
+    & > *:first-child
+        margin-right: 2rem
+
+    button
+        position: absolute
+        right: 0
+        top: 0
+        margin: 0!important
+
+.content
+    position: relative
+
+    & iframe
+        border: none

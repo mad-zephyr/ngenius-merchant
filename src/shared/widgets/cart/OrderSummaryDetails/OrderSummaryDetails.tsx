@@ -11,8 +11,6 @@ import cls from './styles.module.sass'
 export const OrderSummaryDetails: FC = () => {
   const { subTotal, discount, coupons, deliveryType } = useChekoutStore()
 
-  console.log('COUPONS: ', coupons)
-
   return (
     <div className={cls.main}>
       <div className={cls.row}>
